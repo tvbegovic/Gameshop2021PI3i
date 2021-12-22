@@ -20,6 +20,8 @@ namespace GameshopWeb.Db
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Genre>().ToTable("Genre");
+            modelBuilder.Entity<Company>().ToTable("Company");
+            modelBuilder.Entity<Game>().ToTable("Game");
         }
     }
 }

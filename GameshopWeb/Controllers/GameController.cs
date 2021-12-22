@@ -23,5 +23,30 @@ namespace GameshopWeb.Controllers
         {
             return context.Genres.ToList();
         }
+
+        [HttpGet("companies")]
+        public List<Company> GetCompanies()
+        {
+            return context.Companies.ToList();
+        }
+
+        [HttpGet("bygenre/{id}")]
+        public List<Game> GetByGenre(int id)
+        {
+            return context.Games.Where(g => g.IdGenre == id).ToList();
+        }
+
+        [HttpGet("bycompany/{id}")]
+        public List<Game> GetByCompany(int id)
+        {
+            return context.Games.Where(g => g.IdDeveloper == id || g.IdPublisher == id).ToList();
+        }
+
+        [HttpGet("search/{text}")]
+        public List<Game> Search(string text)
+        {
+            return context.Games.Where(g => g.Title.Contains(text)).ToList();
+        }
+
     }
 }
