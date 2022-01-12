@@ -47,6 +47,8 @@ namespace GameshopWeb
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GameshopWeb v1"));
             }
+            app.UseDefaultFiles();  //redoslijed - prvo default, onda static
+            app.UseStaticFiles();
 
             app.UseHttpsRedirection();
 

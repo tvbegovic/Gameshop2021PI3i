@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GameshopWeb.Db;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameshopWeb.Controllers
 {
@@ -45,7 +46,14 @@ namespace GameshopWeb.Controllers
         [HttpGet("search/{text}")]
         public List<Game> Search(string text)
         {
-            return context.Games.Where(g => g.Title.Contains(text)).ToList();
+            return context.Games.Include(g => g.Genre).Include(g => g.Developer)
+                .Include(g => g.Publisher)
+                .Where(
+                g => g.Title.Contains(text)
+                     || g.Genre.Name.Contains(text)
+                     || g.Developer.Name.Contains(text)
+                     || g.Publisher.Name.Contains(text)
+                ).ToList();
         }
 
     }
