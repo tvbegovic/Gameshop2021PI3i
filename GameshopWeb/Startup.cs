@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using GameshopWeb.Db;
+using Microsoft.AspNetCore.Http;
 
 namespace GameshopWeb
 {
@@ -47,8 +48,29 @@ namespace GameshopWeb
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GameshopWeb v1"));
             }
+
+            //Trick to allow refresh of pages inside Angular SPA
+            var angularRoutes = new[] {
+                 "/home",
+                 "/login",
+                 "/admin",
+                 "/cart"
+             };
+
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.HasValue && null != angularRoutes.FirstOrDefault(
+                    (ar) => context.Request.Path.Value.StartsWith(ar, StringComparison.OrdinalIgnoreCase)))
+                {
+                    context.Request.Path = new PathString("/");
+                }
+                await next();
+            });
+
             app.UseDefaultFiles();  //redoslijed - prvo default, onda static
             app.UseStaticFiles();
+
+            
 
             app.UseHttpsRedirection();
 
