@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GameshopWeb.Db;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GameshopWeb.Controllers
 {
@@ -57,6 +58,7 @@ namespace GameshopWeb.Controllers
         }
 
         [HttpGet("listModel")]
+        [Authorize]
         public ListModel GetListModel()
         {
             return new ListModel
@@ -68,11 +70,28 @@ namespace GameshopWeb.Controllers
         }
 
         [HttpPost("")]
+        [Authorize]
         public Game Create(Game game)
         {
             context.Games.Add(game);
             context.SaveChanges();
             return game;
+        }
+
+        [HttpPut("")]
+        [Authorize]
+        public Game Update(Game game)
+        {
+            context.Games.Update(game);
+            context.SaveChanges();
+            return game;
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public void Delete(int id)
+        {
+            context.Database.ExecuteSqlInterpolated($"DELETE FROM Game WHERE id = {id}");
         }
 
     }

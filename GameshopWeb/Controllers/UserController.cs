@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using GameshopWeb.Db;
 using Microsoft.EntityFrameworkCore;
+using GameshopWeb.JWT;
+using System.Security.Claims;
 
 namespace GameshopWeb.Controllers
 {
@@ -14,9 +16,11 @@ namespace GameshopWeb.Controllers
     public class UserController : ControllerBase
     {
         private MyDbContext context;
-        public UserController(MyDbContext context)
+        private IJwtAuthManager jwtAuthManager;
+        public UserController(MyDbContext context, IJwtAuthManager jwtAuthManager)
         {
             this.context = context;
+            this.jwtAuthManager = jwtAuthManager;
         }
 
         [HttpGet("login")]
@@ -26,9 +30,12 @@ namespace GameshopWeb.Controllers
                 u.Password == password);
             if (user == null)
                 return null;
+            var claims = new Claim[] { new Claim(ClaimTypes.Email, email) };
+            var tokens = jwtAuthManager.GenerateTokens(email, claims, DateTime.Now);
             return new LoginResult
             {
-                User = user                
+                User = user,
+                AccessToken = tokens.AccessToken
             };
         }
     }
